@@ -11,7 +11,7 @@ const links = [
   { label: "YouTube", href: "https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1", Icon: FiYoutube },
   { label: "Email", href: "mailto:ash.ranjan09@gmail.com", Icon: FiMail },
   { label: "Support", href: "https://a2rp-donation-page.netlify.app/", Icon: FiHeart },
-  { label: "Buy Me a Coffee", href: "https://www.buymeacoffee.com/ashishranjan", Icon: FiCoffee },
+  { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/ashishranjan", Icon: FiCoffee },
   { label: "Patreon", href: "https://www.patreon.com/ashishranjan", Icon: FiGift },
   { label: "Source code", href: "https://github.com/a2rp/crm-sales-pipeline", Icon: FiGithub },
 ];
