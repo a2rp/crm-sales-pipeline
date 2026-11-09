@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 import { dealOwners, toLocalISODate } from "../../data";
 import styles from "./styles.module.css";
 
@@ -19,7 +19,7 @@ const TaskForm = ({ initialTask, deals = [], onSubmit, onCancel }) => {
     if (Object.keys(nextErrors).length) return;
     onSubmit({ ...form, title: form.title.trim() });
   };
-  const field = (name, label, control, wide = false) => <label className={`${styles.field} ${wide ? styles.wide : ""}`} htmlFor={`task-${name}`} key={name}><span>{label}</span>{control}{errors[name] ? <small className={styles.error}>{errors[name]}</small> : null}</label>;
+  const field = (name, label, control, wide = false) => <label className={`${styles.field} ${wide ? styles.wide : ""}`} htmlFor={`task-${name}`} key={name}><span>{label}</span>{errors[name] ? cloneElement(control, { "aria-describedby": `task-${name}-error` }) : control}{errors[name] ? <small id={`task-${name}-error`} className={styles.error}>{errors[name]}</small> : null}</label>;
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <div className={styles.grid}>

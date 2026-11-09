@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 import { dealOwners, dealStages, toLocalISODate } from "../../data";
 import styles from "./styles.module.css";
 
@@ -22,7 +22,7 @@ const DealForm = ({ initialDeal, onSubmit, onCancel }) => {
     if (Object.keys(nextErrors).length) return;
     onSubmit({ ...form, name: form.name.trim(), company: form.company.trim(), value: Number(form.value), probability: Number(form.probability), source: form.source.trim(), nextStep: form.nextStep.trim() });
   };
-  const field = (name, label, control, wide = false) => <label className={`${styles.field} ${wide ? styles.wide : ""}`} htmlFor={`deal-${name}`} key={name}><span>{label}</span>{control}{errors[name] ? <small className={styles.error}>{errors[name]}</small> : null}</label>;
+  const field = (name, label, control, wide = false) => <label className={`${styles.field} ${wide ? styles.wide : ""}`} htmlFor={`deal-${name}`} key={name}><span>{label}</span>{errors[name] ? cloneElement(control, { "aria-describedby": `deal-${name}-error` }) : control}{errors[name] ? <small id={`deal-${name}-error`} className={styles.error}>{errors[name]}</small> : null}</label>;
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <div className={styles.grid}>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 import { dealOwners } from "../../data";
 import styles from "./styles.module.css";
 
@@ -20,7 +20,7 @@ const ContactForm = ({ initialContact, onSubmit, onCancel }) => {
     if (Object.keys(nextErrors).length) return;
     onSubmit({ ...form, name: form.name.trim(), title: form.title.trim(), company: form.company.trim(), email: form.email.trim(), phone: form.phone.trim() });
   };
-  const field = (name, label, control, wide = false) => <label className={`${styles.field} ${wide ? styles.wide : ""}`} htmlFor={`contact-${name}`} key={name}><span>{label}</span>{control}{errors[name] ? <small className={styles.error}>{errors[name]}</small> : null}</label>;
+  const field = (name, label, control, wide = false) => <label className={`${styles.field} ${wide ? styles.wide : ""}`} htmlFor={`contact-${name}`} key={name}><span>{label}</span>{errors[name] ? cloneElement(control, { "aria-describedby": `contact-${name}-error` }) : control}{errors[name] ? <small id={`contact-${name}-error`} className={styles.error}>{errors[name]}</small> : null}</label>;
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <div className={styles.grid}>

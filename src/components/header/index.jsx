@@ -20,6 +20,7 @@ const Header = ({ searchValue, onSearchChange, onSearch, onNewDeal, taskCount })
   useEffect(() => {
     const onShortcut = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        if (document.querySelector('[aria-modal="true"]')) return;
         event.preventDefault();
         setSearchOpen(true);
         window.setTimeout(() => searchInput.current?.focus(), 0);

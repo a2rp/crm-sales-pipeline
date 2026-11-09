@@ -1,4 +1,4 @@
-import { FiArrowDownRight, FiArrowRight, FiArrowUpRight, FiBriefcase, FiCalendar, FiCheckCircle, FiClock, FiTarget, FiTrendingUp, FiUsers } from "react-icons/fi";
+import { FiArrowDownRight, FiArrowRight, FiBriefcase, FiCalendar, FiCheckCircle, FiClock, FiTarget, FiTrendingUp, FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { dealStages, formatCurrency, formatDate, toLocalISODate } from "../../data";
 import shared from "../shared.module.css";
@@ -7,7 +7,11 @@ import styles from "./styles.module.css";
 const Overview = ({ deals, contacts, tasks, onOpenDeal, onCompleteTask }) => {
   const activeDeals = deals.filter((deal) => !deal.stage.startsWith("Closed"));
   const pipeline = activeDeals.reduce((sum, deal) => sum + deal.value, 0);
-  const forecast = activeDeals.reduce((sum, deal) => sum + deal.value * deal.probability / 100, 0);
+  const now = new Date();
+  const quarterStart = toLocalISODate(new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1));
+  const nextQuarterStart = toLocalISODate(new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + 3, 1));
+  const quarterDeals = activeDeals.filter((deal) => deal.closeDate >= quarterStart && deal.closeDate < nextQuarterStart);
+  const forecast = quarterDeals.reduce((sum, deal) => sum + deal.value * deal.probability / 100, 0);
   const won = deals.filter((deal) => deal.stage === "Closed won");
   const lost = deals.filter((deal) => deal.stage === "Closed lost");
   const closed = won.length + lost.length;
@@ -27,9 +31,9 @@ const Overview = ({ deals, contacts, tasks, onOpenDeal, onCompleteTask }) => {
         <Link className={shared.primaryButton} to="/pipeline"><FiBriefcase /> View pipeline <FiArrowRight /></Link>
       </div>
       <section className={styles.metrics} aria-label="Sales performance">
-        <article className={`${styles.metric} ${styles.featured}`}><div className={styles.metricTop}><span className={styles.metricIcon}><FiBriefcase /></span><span className={styles.trend}><FiArrowUpRight /> 12.8%</span></div><small>Open pipeline</small><strong>{formatCurrency(pipeline, true)}</strong><p>{activeDeals.length} deals moving across the team</p><div className={styles.sparkline} aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /><i /></div></article>
-        <article className={styles.metric}><div className={styles.metricTop}><span className={styles.metricIcon}><FiTarget /></span><span className={styles.metricNote}>weighted</span></div><small>Forecast this quarter</small><strong>{formatCurrency(forecast, true)}</strong><p>Based on current deal confidence</p><div className={styles.metricFoot}><span className={styles.dot} /> On track for team target</div></article>
-        <article className={styles.metric}><div className={styles.metricTop}><span className={styles.metricIcon}><FiTrendingUp /></span><span className={styles.trend}><FiArrowUpRight /> 8 pts</span></div><small>Win rate</small><strong>{winRate}%</strong><p>{won.length} wins from {closed} closed deals</p><div className={styles.miniProgress}><span style={{ width: `${winRate}%` }} /></div></article>
+        <article className={`${styles.metric} ${styles.featured}`}><div className={styles.metricTop}><span className={styles.metricIcon}><FiBriefcase /></span><span className={styles.metricNote}>current</span></div><small>Open pipeline</small><strong>{formatCurrency(pipeline, true)}</strong><p>{activeDeals.length} deals moving across the team</p><div className={styles.sparkline} aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /><i /></div></article>
+        <article className={styles.metric}><div className={styles.metricTop}><span className={styles.metricIcon}><FiTarget /></span><span className={styles.metricNote}>weighted</span></div><small>Forecast this quarter</small><strong>{formatCurrency(forecast, true)}</strong><p>Based on current quarter deal confidence</p><div className={styles.metricFoot}><span className={styles.dot} /> {quarterDeals.length} deals closing this quarter</div></article>
+        <article className={styles.metric}><div className={styles.metricTop}><span className={styles.metricIcon}><FiTrendingUp /></span><span className={styles.metricNote}>overall</span></div><small>Win rate</small><strong>{winRate}%</strong><p>{won.length} wins from {closed} closed deals</p><div className={styles.miniProgress}><span style={{ width: `${winRate}%` }} /></div></article>
         <article className={`${styles.metric} ${overdue ? styles.attention : ""}`}><div className={styles.metricTop}><span className={styles.metricIcon}><FiClock /></span>{overdue ? <span className={styles.overdueTag}>{overdue} overdue</span> : <span className={styles.metricNote}>up next</span>}</div><small>Tasks to complete</small><strong>{tasks.filter((task) => !task.completed).length}</strong><p>{overdue ? "A couple of follow-ups need a look" : "Keep your next steps moving"}</p><Link to="/activities" className={styles.inlineLink}>Open task list <FiArrowRight /></Link></article>
       </section>
       <section className={styles.mainGrid}>
