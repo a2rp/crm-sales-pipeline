@@ -10,7 +10,7 @@ import Modal from "./components/modal";
 import ScrollToTop from "./components/scrollToTop";
 import TaskForm from "./components/taskform";
 import Toast from "./components/toast";
-import { formatCurrency, formatDate, initialContacts, initialDeals, initialTasks } from "./data";
+import { dealProbabilityByStage, formatCurrency, formatDate, initialContacts, initialDeals, initialTasks } from "./data";
 import styles from "./App.module.css";
 
 const makeId = (items, prefix) => {
@@ -75,10 +75,9 @@ const App = () => {
     notify(task.completed ? "Task moved back to open." : "Task marked complete.");
   };
   const moveDeal = (id, stage) => {
-    const probabilityByStage = { Qualification: 20, Discovery: 35, Proposal: 55, Negotiation: 80, "Closed won": 100, "Closed lost": 0 };
     const deal = deals.find((item) => item.id === id);
     if (!deal || deal.stage === stage) return;
-    setDeals((current) => current.map((item) => item.id === id ? { ...item, stage, probability: probabilityByStage[stage] ?? item.probability, lastActivity: "Stage updated just now" } : item));
+    setDeals((current) => current.map((item) => item.id === id ? { ...item, stage, probability: dealProbabilityByStage[stage] ?? item.probability, lastActivity: "Stage updated just now" } : item));
     notify(`${deal.name} moved to ${stage}.`);
   };
   const requestDelete = (kind, record) => open("confirmDelete", { kind, record });

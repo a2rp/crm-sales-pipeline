@@ -1,5 +1,14 @@
 export const dealStages = ["Qualification", "Discovery", "Proposal", "Negotiation", "Closed won", "Closed lost"];
 
+export const dealProbabilityByStage = {
+  Qualification: 20,
+  Discovery: 35,
+  Proposal: 55,
+  Negotiation: 80,
+  "Closed won": 100,
+  "Closed lost": 0,
+};
+
 export const dealOwners = ["Maya Chen", "Jordan Lee", "Alex Morgan", "Sam Rivera"];
 
 export const toLocalISODate = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;

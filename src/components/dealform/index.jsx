@@ -1,5 +1,5 @@
 import { cloneElement, useState } from "react";
-import { dealOwners, dealStages, toLocalISODate } from "../../data";
+import { dealOwners, dealProbabilityByStage, dealStages, toLocalISODate } from "../../data";
 import styles from "./styles.module.css";
 
 const DealForm = ({ initialDeal, onSubmit, onCancel }) => {
@@ -7,7 +7,9 @@ const DealForm = ({ initialDeal, onSubmit, onCancel }) => {
   const [errors, setErrors] = useState({});
   const update = (event) => {
     const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
+    setForm((current) => name === "stage"
+      ? { ...current, stage: value, probability: String(dealProbabilityByStage[value] ?? current.probability) }
+      : { ...current, [name]: value });
     setErrors((current) => ({ ...current, [name]: "" }));
   };
   const submit = (event) => {
